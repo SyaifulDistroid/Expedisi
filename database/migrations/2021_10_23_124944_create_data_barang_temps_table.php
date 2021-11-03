@@ -15,6 +15,8 @@ class CreateDataBarangTempsTable extends Migration
     {
         Schema::create('data_barang_temps', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_transaction');
+            $table->foreign('id_transaction')->references('id')->on('transactions');
             $table->string('jenis_barang');
             $table->string('isi_barang');
             $table->integer('qty');

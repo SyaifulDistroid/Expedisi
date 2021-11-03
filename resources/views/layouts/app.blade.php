@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Ekspedisi') }}</title>
+    <title>{{ config('app.name', 'Hani Exspress') }}</title>
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/jquery-3.6.0.slim.min.js') }}"></script>
     <!-- Fonts -->
     <!--<link rel="dns-prefetch" href="https://fonts.gstatic.com">-->
     <!--<link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">-->
@@ -17,9 +18,9 @@
 <body>
 <div id="app">
     <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">
-                Ekpedisi
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url('/home') }}">
+                Hani Exspress
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -37,10 +38,18 @@
                         <li><a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a></li>
                         <li><a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a></li>
                     @else
-                        <li><a class="nav-link" href="{{ route('users.index') }}">Manage Users</a></li>
-                        <li><a class="nav-link" href="{{ route('roles.index') }}">Manage Role</a></li>
-                        <li><a class="nav-link" href="{{ route('products.index') }}">Manage Product</a></li>
-                        <li><a class="nav-link" href="{{ route('transaction.index') }}">Manage Transaction</a></li>
+                        @can('user-list')
+                            <li><a class="nav-link" href="{{ route('users.index') }}">Manage Users</a></li>
+                        @endcan
+
+                        @can('role-list')
+                            <li><a class="nav-link" href="{{ route('roles.index') }}">Manage Role</a></li>
+                        @endcan
+{{--                        <li><a class="nav-link" href="{{ route('products.index') }}">Manage Product</a></li>--}}
+                        @can('transaction-list')
+                            <li><a class="nav-link" href="{{ route('transaction.index') }}">Manage Transaction</a></li>
+                        @endcan
+
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 {{ Auth::user()->name }} <span class="caret"></span>
@@ -67,7 +76,7 @@
     </nav>
 
 
-    <main class="py-4">
+    <main class="py-1">
         <div class="container">
             @yield('content')
         </div>

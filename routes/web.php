@@ -38,4 +38,5 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('products', ProductController::class);
     Route::resource('transaction', TransactionController::class);
     Route::post('transaction.databarang', [TransactionController::class, 'databarang'])->name('transaction.databarang');
+    Route::delete('transaction.databarang/{id}/{idtransaction}', [TransactionController::class, 'destroydatabarang'])->name('transaction.databarang');
 });

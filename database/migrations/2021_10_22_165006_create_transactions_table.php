@@ -21,6 +21,7 @@ class CreateTransactionsTable extends Migration
             $table->string('nama_penerima');
             $table->string('alamat_penerima');
             $table->string('no_handphone_penerima');
+            $table->string('cara_pembayaran');
             $table->timestamps();
         });
     }
