@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DataBarangTemp;
 use App\Models\Transaction;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use DB;
 use Hash;
@@ -43,21 +44,23 @@ class TransactionController extends Controller
             $q_cara_pembayaran = ' AND cara_pembayaran = "'.$cara_pembayaran.'" ';
         }
 
+        $cabang = "";
+        if($request->user()->cabang != "All"){
+            $cabang = " AND cabang = '".$request->user()->cabang."' ";
+        }
+
+//        var_dump($cabang); exit;
+
         $datas = Transaction::orderBy('id','DESC')
             ->whereRaw(' (nama_pengirim like "%'.$cari.'%" or
             alamat_pengirim like "%'.$cari.'%" or
             no_handphone_pengirim like "%'.$cari.'%" or
-            nama_penerima like "%'.$cari.'%" or alamat_penerima like "%'.$cari.'%" or no_handphone_penerima like "%'.$cari.'%" )
-            '.$q_cara_pembayaran)
-            ->paginate(2);
-
-//        DB::enableQueryLog(); // Enable query log
-//        dd(DB::getQueryLog()); // Show results of log
-
-//        dd($datas->toSql());
+            nama_penerima like "%'.$cari.'%" or alamat_penerima like "%'.$cari.'%" or no_handphone_penerima like "%'.$cari.'%" or cabang like "%'.$cari.'%"  )
+            '.$q_cara_pembayaran.$cabang)
+            ->paginate(10);
 
         return view('transaction.index',compact('datas'))
-            ->with('i', ($request->input('page', 1) - 1) * 2);
+            ->with('i', ($request->input('page', 1) - 1) * 10);
     }
 
     /**
@@ -104,7 +107,11 @@ class TransactionController extends Controller
 
         $allBarang = array();
 
+        $request['cabang'] = $request->user()->cabang;
+
         $this->validate($request, [
+            'no_resi' => 'required',
+            'cabang' => 'required',
             'cara_pembayaran'=> 'required',
             'nama_pengirim'=> 'required',
             'alamat_pengirim'=> 'required',
@@ -195,9 +202,11 @@ class TransactionController extends Controller
         $berat_barang = $request->get('berat_barang');
         $biaya_barang = $request->get('biaya_barang');
 
-//        var_dump($jenis_barang); exit;
-//
+        $request['cabang'] = $request->user()->cabang;
+
         $this->validate($request, [
+            'no_resi' => 'required',
+            'cabang' => 'required',
             'cara_pembayaran'=> 'required',
             'nama_pengirim'=> 'required',
             'alamat_pengirim'=> 'required',

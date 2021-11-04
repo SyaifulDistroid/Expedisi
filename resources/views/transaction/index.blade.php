@@ -49,6 +49,8 @@
 <table class="table table-bordered">
  <tr>
     <th>No.</th>
+    <th>Cabang</th>
+    <th>No. Resi</th>
     <th>Nama Pengirim</th>
     <th>Alamat Pengirim</th>
     <th>No Handphone Pengirim</th>
@@ -56,11 +58,14 @@
     <th>Alamat Penerima</th>
     <th>No Handphone Penerima</th>
     <th>Cara Pembayaran</th>
+     <th>Dibuat Tgl</th>
      <th></th>
  </tr>
  @forelse ($datas as $data)
   <tr>
     <td>{{ ++$i }}.</td>
+    <td>{{ $data->cabang }}</td>
+    <td>{{ $data->no_resi }}</td>
     <td>{{ $data->nama_pengirim }}</td>
     <td>{{ $data->alamat_pengirim }}</td>
     <td>{{ $data->no_handphone_pengirim }}</td>
@@ -68,6 +73,7 @@
     <td>{{ $data->alamat_penerima }}</td>
     <td>{{ $data->no_handphone_penerima }}</td>
     <td>{{ $data->cara_pembayaran }}</td>
+    <td>{{ $data->created_at }}</td>
     <td>
        <a class="btn btn-info" href="{{ route('transaction.show',$data->id) }}">Show</a>
 

@@ -15,6 +15,8 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->string('no_resi');
+            $table->string('cabang');
             $table->string('nama_pengirim');
             $table->string('alamat_pengirim');
             $table->string('no_handphone_pengirim');

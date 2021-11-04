@@ -15,6 +15,8 @@ class Transaction extends Model
      * @var array
      */
     protected $fillable = [
+        'cabang',
+        'no_resi',
         'nama_pengirim',
         'alamat_pengirim',
         'no_handphone_pengirim',

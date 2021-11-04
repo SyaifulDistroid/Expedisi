@@ -36,6 +36,32 @@
 
 <div class="row">
 
+    <div class="col-lg-12 margin-tb"><p></p></div>
+
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <div class="form-group">
+            <strong>No. Resi:</strong>
+            {!! Form::text('no_resi', null, array('placeholder' => 'No. Resi','class' => 'form-control')) !!}
+        </div>
+    </div>
+
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <div class="form-group">
+            <strong>Cabang:</strong>
+            {!! Form::text('cabang', app('auth')->user()->cabang, array('placeholder' => 'Cabang','class' => 'form-control', 'disabled' => 'disabled')) !!}
+{{--            'disabled' => 'disabled'--}}
+        </div>
+    </div>
+
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <div class="form-group">
+            <p style="font-size: 20px; text-align: center">
+                <strong id="clock">00:00:00</strong>
+                <br>
+                <label id="date_wrapper"></label>
+            </p>
+        </div>
+    </div>
 
     <div class="col-lg-12 margin-tb"><p></p></div>
 
@@ -159,6 +185,10 @@
     $( document ).ready(function() {
         console.log( "ready!" );
 
+        setInterval(function() {
+            updateClock();
+        }, 1000)
+
         $("#btnAddData").bind("click",function(){
             // your statements;
 
@@ -176,6 +206,15 @@
                 "</tr>");
 
             $("#count").val(no)
+
+
+
+            $("#jenis_barang").val("");
+            $("#isi_barang").val("");
+            $("#qty").val("");
+            $("#berat_barang").val("");
+            $("#biaya_barang").val("");
+
         });
 
         $("tr td .drop").bind("click", function(){
@@ -189,6 +228,44 @@
         no--;
         $("#count").val(no)
         row.closest('tr').remove();
+    }
+
+    function updateClock (){
+        var currentTime = new Date ( );
+        var currentHours = currentTime.getHours ( );
+        var currentMinutes = currentTime.getMinutes ( );
+        var currentSeconds = currentTime.getSeconds ( );
+
+        var day = currentTime.getDay();
+        var dayarr =["Minggu","Senin","Selasa","Rabu","Kamis","Jum'at","Sabtu"]; day = dayarr[day];
+
+        var year = currentTime.getFullYear();
+        var month = currentTime.getMonth();
+        var tgl = currentTime.getDate();
+
+        var montharr = ["Desember", "Januari", "Febuari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November" ];
+        month = montharr[month];
+
+        // Pad the minutes and seconds with leading zeros, if required
+        currentHours = ( currentHours < 10 ? "0" : "" ) + currentHours;
+        currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
+        currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
+
+        // Choose either "AM" or "PM" as appropriate
+        var timeOfDay = ""; // ( currentHours < 12 ) ? "AM" : "PM";
+
+        // Convert the hours component to 12-hour format if needed
+        // currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
+
+        // Convert an hours component of "0" to "12"
+        // currentHours = ( currentHours == 0 ) ? 12 : currentHours;
+
+        // Compose the string for display
+        var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
+        var currentDateString = day+", "+ tgl+" "+month+" "+year;
+
+        $("#clock").html(currentTimeString);
+        $("#date_wrapper").html(currentDateString);
     }
 
 </script>
