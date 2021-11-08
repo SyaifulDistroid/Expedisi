@@ -87,7 +87,7 @@
     <div class="col-xs-3 col-sm-3 col-md-3">
         <div class="form-group">
             <strong>No Handphone Pengirim:</strong>
-            {!! Form::text('no_handphone_pengirim', null, array('placeholder' => 'No Handphone Pengirim','class' => 'form-control')) !!}
+            {!! Form::text('no_handphone_pengirim', null, array('placeholder' => 'No Handphone Pengirim','class' => 'form-control', 'type' => 'number')) !!}
         </div>
     </div>
 
@@ -115,7 +115,7 @@
     <div class="col-xs-3 col-sm-3 col-md-3">
         <div class="form-group">
             <strong>No Handphone Penerima:</strong>
-            {!! Form::text('no_handphone_penerima', null, array('placeholder' => 'No Handphone Penerima','class' => 'form-control')) !!}
+            {!! Form::text('no_handphone_penerima', null, array('placeholder' => 'No Handphone Penerima','class' => 'form-control', 'type' => 'number')) !!}
         </div>
     </div>
 
@@ -155,11 +155,11 @@
             </tr>
 
             <tr>
-                <td>{!! Form::text('jenis_barang', null, array('placeholder' => 'Jenis Barang','class' => 'form-control','id'=>'jenis_barang')) !!}</td>
-                <td>{!! Form::text('isi_barang', null, array('placeholder' => 'Isi Barang','class' => 'form-control','id'=>'isi_barang')) !!}</td>
-                <td>{!! Form::text('qty', null, array('placeholder' => 'Qty','class' => 'form-control','id'=>'qty')) !!}</td>
-                <td>{!! Form::text('berat_barang', null, array('placeholder' => 'Berat Barang','class' => 'form-control','id'=>'berat_barang')) !!}</td>
-                <td>{!! Form::text('biaya_barang', null, array('placeholder' => 'Biaya Barang','class' => 'form-control','id'=>'biaya_barang')) !!}</td>
+                <td>{!! Form::text('jenis_barang', null, array('placeholder' => 'Jenis Barang','class' => 'form-control','id'=>'jenis_barang', 'name' => 'jenis_barang[]')) !!}</td>
+                <td>{!! Form::text('isi_barang', null, array('placeholder' => 'Isi Barang','class' => 'form-control','id'=>'isi_barang', 'name' => 'isi_barang[]')) !!}</td>
+                <td>{!! Form::text('qty', null, array('placeholder' => 'Qty','class' => 'form-control','id'=>'qty', 'name' => 'qty[]')) !!}</td>
+                <td>{!! Form::text('berat_barang', null, array('placeholder' => 'Berat Barang','class' => 'form-control rupiah', 'type' => 'number', 'id'=>'berat_barang', 'name' => 'berat_barang[]')) !!}</td>
+                <td>{!! Form::text('biaya_barang', null, array('placeholder' => 'Biaya Barang','class' => 'form-control rupiahWithSymbol', 'type' => 'number', 'id'=>'biaya_barang', 'name' => 'biaya_barang[]')) !!}</td>
 
                 <td>
                     <div class="col-xs-3 col-sm-3 col-md-3 text-center">
@@ -185,6 +185,14 @@
     $( document ).ready(function() {
         console.log( "ready!" );
 
+        $(".rupiahWithSymbol").on("input", function() {
+            $(this).val( formatRupiah( $(this).val(), "Rp. ") );
+        });
+
+        $(".rupiah").on("input", function() {
+            $(this).val( formatRupiah( $(this).val()) );
+        });
+
         setInterval(function() {
             updateClock();
         }, 1000)
@@ -200,20 +208,18 @@
                     "<td><input class='form-control' placeholder='jenis barang' id='jenis_barang"+no+"' name='jenis_barang[]' value='"+$("#jenis_barang").val()+"' ></td>" +
                     "<td><input class='form-control' placeholder='isi barang' id='isi_barang"+no+"' name='isi_barang[]' value='"+$("#isi_barang").val()+"' ></td>" +
                     "<td><input class='form-control' placeholder='qty' id='qty'"+no+"' name='qty[]' value='"+$("#qty").val()+"' ></td>" +
-                    "<td><input class='form-control' placeholder='berat barang' id='berat_barang"+no+"' name='berat_barang[]' value='"+$("#berat_barang").val()+"' ></td>" +
-                    "<td><input class='form-control' placeholder='biaya barang' id='biaya_barang"+no+"' name='biaya_barang[]' value='"+$("#biaya_barang").val()+"' ></td>" +
+                    "<td><input type='number' class='form-control rupiah' placeholder='berat barang' id='berat_barang"+no+"' name='berat_barang[]' value='"+$("#berat_barang").val()+"' ></td>" +
+                    "<td><input type='number' class='form-control rupiahWithSymbol' placeholder='biaya barang' id='biaya_barang"+no+"' name='biaya_barang[]' value='"+$("#biaya_barang").val()+"' ></td>" +
                     "<td><button type='button' class='btn btn-danger drop' onclick='drop($(this))'>Hapus</button></td>" +
                 "</tr>");
 
             $("#count").val(no)
 
-
-
-            $("#jenis_barang").val("");
-            $("#isi_barang").val("");
-            $("#qty").val("");
-            $("#berat_barang").val("");
-            $("#biaya_barang").val("");
+            // $("#jenis_barang").val("");
+            // $("#isi_barang").val("");
+            // $("#qty").val("");
+            // $("#berat_barang").val("");
+            // $("#biaya_barang").val("");
 
         });
 
@@ -266,6 +272,31 @@
 
         $("#clock").html(currentTimeString);
         $("#date_wrapper").html(currentDateString);
+    }
+
+    // var rupiah = document.getElementById("rupiah");
+    // rupiah.addEventListener("keyup", function(e) {
+    //     // tambahkan 'Rp.' pada saat form di ketik
+    //     // gunakan fungsi formatRupiah() untuk mengubah angka yang di ketik menjadi format angka
+    //     rupiah.value = formatRupiah(this.value, "Rp. ");
+    // });
+
+    /* Fungsi formatRupiah */
+    function formatRupiah(angka, prefix) {
+        var number_string = angka.replace(/[^,\d]/g, "").toString(),
+            split = number_string.split(","),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        // tambahkan titik jika yang di input sudah menjadi angka ribuan
+        if (ribuan) {
+            separator = sisa ? "." : "";
+            rupiah += separator + ribuan.join(".");
+        }
+
+        rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+        return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
     }
 
 </script>

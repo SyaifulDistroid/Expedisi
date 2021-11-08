@@ -3,6 +3,7 @@
 
 @section('content')
     <div class="row">
+
         <div class="col-lg-3 margin-tb">
             <div class="pull-left">
                 <h2>Buat Transaksi</h2>
@@ -35,6 +36,33 @@
     {!! Form::open(array( 'route' => ['transaction.update', $data->id],'method'=>'PUT')) !!}
 
     <div class="row">
+
+        <div class="col-lg-12 margin-tb"><p></p></div>
+
+        <div class="col-xs-3 col-sm-3 col-md-3">
+            <div class="form-group">
+                <strong>No. Resi:</strong>
+                {!! Form::text('no_resi', $data->no_resi, array('placeholder' => 'No. Resi','class' => 'form-control')) !!}
+            </div>
+        </div>
+
+        <div class="col-xs-3 col-sm-3 col-md-3">
+            <div class="form-group">
+                <strong>Cabang:</strong>
+                {!! Form::text('cabang', app('auth')->user()->cabang, array('placeholder' => 'Cabang','class' => 'form-control', 'disabled' => 'disabled')) !!}
+                {{--            'disabled' => 'disabled'--}}
+            </div>
+        </div>
+
+        <div class="col-xs-3 col-sm-3 col-md-3">
+            <div class="form-group">
+                <p style="font-size: 20px; text-align: center">
+                    <strong id="clock">00:00:00</strong>
+                    <br>
+                    <label id="date_wrapper"></label>
+                </p>
+            </div>
+        </div>
 
         <div class="col-lg-12 margin-tb"><p></p></div>
 

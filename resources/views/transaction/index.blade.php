@@ -25,23 +25,65 @@
 {!! Form::open(array('route' => 'transaction.index','method'=>'GET')) !!}
 
 <div class="row">
-    <div class="col-xs-3 col-sm-3 col-md-3">
-        <div class="form-group">
-            <strong>Cari:</strong>
-            {!! Form::text('search', app('request')->input('search'), array('placeholder' => 'cari...','class' => 'form-control')) !!}
-        </div>
-    </div>
+
     <div class="col-xs-3 col-sm-3 col-md-3">
         <div class="form-group">
             <strong>Pembayaran dengan:</strong>
             {!! Form::select('cara_pembayaran', array('' => 'Pilih cara pembayaran', 'LUNAS' => 'LUNAS', 'TAGIH' => 'TAGIH', 'FRANCO' => 'FRANCO'), app('request')->input('cara_pembayaran'), array('class' => 'form-control')) !!}
         </div>
     </div>
+
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <div class="form-group">
+            <strong>Tanggal awal:</strong>
+
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-th"></span>
+                </div>
+                <input placeholder="Pilih tanggal" type="date" value="{{ app('request')->input('tanggal_awal')  }}" class="form-control datepicker" name="tanggal_awal">
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <div class="form-group">
+            <strong>Tanggal akhir:</strong>
+
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-th"></span>
+                </div>
+                <input placeholder="Pilih tanggal" type="date" value="{{ app('request')->input('tanggal_akhir')  }}" class="form-control datepicker" name="tanggal_akhir">
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-xs-1 col-sm-1 col-md-1" style="">
+        <div class="form-group" style="margin-top: 23px">
+            <input name="check_tanggal" class="form-check-input" type="checkbox" value="checked" id="flexCheckDefault" {{ app('request')->input('check_tanggal')  }}>
+            <label class="form-check-label" for="flexCheckDefault">
+                Gunakan tanggal
+            </label>
+        </div>
+    </div>
+
     <div class="col-xs-1 col-sm-1 col-md-1" style="">
         <div class="form-group">
             <button type="submit" class="btn btn-success form-control" style="margin-top: 23px">Filter</button>
         </div>
     </div>
+
+
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <div class="form-group">
+            <strong>Cari:</strong>
+            {!! Form::text('search', app('request')->input('search'), array('placeholder' => 'cari...','class' => 'form-control')) !!}
+        </div>
+    </div>
+
 </div>
 
 {!! Form::close() !!}
@@ -102,5 +144,17 @@
 {{--{!! $datas->render() !!}--}}
 {{--{{ $datas->links() }}--}}
 
+<script>
+    $(document).ready(function() {
+
+        // console.log($(".datepicker").val());
+        // $(".datepicker").datepicker({
+        //     format: 'yyyy-mm-dd',
+        //     autoclose: true,
+        //     todayHighlight: true,
+        // });
+
+    });
+</script>
 
 @endsection
