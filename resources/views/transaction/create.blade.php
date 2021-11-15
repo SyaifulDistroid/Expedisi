@@ -87,7 +87,7 @@
     <div class="col-xs-3 col-sm-3 col-md-3">
         <div class="form-group">
             <strong>No Handphone Pengirim:</strong>
-            {!! Form::text('no_handphone_pengirim', null, array('placeholder' => 'No Handphone Pengirim','class' => 'form-control', 'type' => 'number')) !!}
+            {!! Form::number('no_handphone_pengirim', null, array('placeholder' => 'No Handphone Pengirim','class' => 'form-control', 'type' => 'number', 'type' => 'number')) !!}
         </div>
     </div>
 
@@ -115,7 +115,7 @@
     <div class="col-xs-3 col-sm-3 col-md-3">
         <div class="form-group">
             <strong>No Handphone Penerima:</strong>
-            {!! Form::text('no_handphone_penerima', null, array('placeholder' => 'No Handphone Penerima','class' => 'form-control', 'type' => 'number')) !!}
+            {!! Form::number('no_handphone_penerima', null, array('placeholder' => 'No Handphone Penerima','class' => 'form-control', 'type' => 'number')) !!}
         </div>
     </div>
 
@@ -157,15 +157,16 @@
             <tr>
                 <td>{!! Form::text('jenis_barang', null, array('placeholder' => 'Jenis Barang','class' => 'form-control','id'=>'jenis_barang', 'name' => 'jenis_barang[]')) !!}</td>
                 <td>{!! Form::text('isi_barang', null, array('placeholder' => 'Isi Barang','class' => 'form-control','id'=>'isi_barang', 'name' => 'isi_barang[]')) !!}</td>
-                <td>{!! Form::text('qty', null, array('placeholder' => 'Qty','class' => 'form-control','id'=>'qty', 'name' => 'qty[]')) !!}</td>
-                <td>{!! Form::text('berat_barang', null, array('placeholder' => 'Berat Barang','class' => 'form-control rupiah', 'type' => 'number', 'id'=>'berat_barang', 'name' => 'berat_barang[]')) !!}</td>
-                <td>{!! Form::text('biaya_barang', null, array('placeholder' => 'Biaya Barang','class' => 'form-control rupiahWithSymbol', 'type' => 'number', 'id'=>'biaya_barang', 'name' => 'biaya_barang[]')) !!}</td>
+                <td>{!! Form::text('qty_view', null, array('placeholder' => 'Qty','class' => 'form-control rupiah', 'type' => 'number', 'id'=>'qty', 'name' => 'qty[]')) !!}</td>
+                <td>{!! Form::text('berat_barang_view', null, array('placeholder' => 'Berat Barang','class' => 'form-control rupiah', 'type' => 'number', 'id'=>'berat_barang', 'name' => 'berat_barang[]')) !!}</td>
+                <td>{!! Form::text('biaya_barang_view', null, array('placeholder' => 'Biaya Barang','class' => 'form-control rupiahWithSymbol', 'type' => 'number', 'id'=>'biaya_barang', 'name' => 'biaya_barang[]')) !!}</td>
 
                 <td>
                     <div class="col-xs-3 col-sm-3 col-md-3 text-center">
                         <button type="button" id="btnAddData" class="btn btn-primary">Tambah Data</button>
                     </div>
                 </td>
+
             </tr>
 
         </table>
@@ -193,6 +194,30 @@
             $(this).val( formatRupiah( $(this).val()) );
         });
 
+        // $("#qty_view").on("input", function() {
+        //
+        //     $(this).val( formatRupiah( $(this).val()) );
+        //
+        //     var unformatted = $(this).val().replace(/[Rp.]/g, "");
+        //     $("#qty").val( unformatted );
+        // });
+        //
+        // $("#berat_barang_view").on("input", function() {
+        //
+        //     $(this).val( formatRupiah( $(this).val()) );
+        //
+        //     var unformatted = $(this).val().replace(/[Rp.]/g, "");
+        //     $("#berat_barang").val( unformatted );
+        // });
+        //
+        // $("#biaya_barang_view").on("input", function() {
+        //
+        //     $(this).val( formatRupiah( $(this).val(), "Rp. ") );
+        //
+        //     var unformatted = $(this).val().replace(/[Rp. ]/g, "");
+        //     $("#biaya_barang").val( unformatted );
+        // });
+
         setInterval(function() {
             updateClock();
         }, 1000)
@@ -203,17 +228,25 @@
             no++;
             console.log( "clicked!" );
 
+            $("#count").val(no)
+
             $('#dataTable tr:last').after("" +
                 "<tr>" +
-                    "<td><input class='form-control' placeholder='jenis barang' id='jenis_barang"+no+"' name='jenis_barang[]' value='"+$("#jenis_barang").val()+"' ></td>" +
-                    "<td><input class='form-control' placeholder='isi barang' id='isi_barang"+no+"' name='isi_barang[]' value='"+$("#isi_barang").val()+"' ></td>" +
-                    "<td><input class='form-control' placeholder='qty' id='qty'"+no+"' name='qty[]' value='"+$("#qty").val()+"' ></td>" +
-                    "<td><input type='number' class='form-control rupiah' placeholder='berat barang' id='berat_barang"+no+"' name='berat_barang[]' value='"+$("#berat_barang").val()+"' ></td>" +
-                    "<td><input type='number' class='form-control rupiahWithSymbol' placeholder='biaya barang' id='biaya_barang"+no+"' name='biaya_barang[]' value='"+$("#biaya_barang").val()+"' ></td>" +
-                    "<td><button type='button' class='btn btn-danger drop' onclick='drop($(this))'>Hapus</button></td>" +
+                "<td><input class='form-control' placeholder='jenis barang' id='jenis_barang"+no+"' name='jenis_barang[]' value='' ></td>" +
+                "<td><input class='form-control' placeholder='isi barang' id='isi_barang"+no+"' name='isi_barang[]' value='' ></td>" +
+                "<td><input type='text' class='form-control rupiah' placeholder='qty' id='qty_view"+no+"' name='qty[]' value='' ></td>" +
+                "<td><input type='text' class='form-control rupiah' placeholder='berat barang' id='berat_barang"+no+"' name='berat_barang[]' value='' ></td>" +
+                "<td><input type='text' class='form-control rupiahWithSymbol' placeholder='biaya barang' id='biaya_barang"+no+"' name='biaya_barang[]' value='' ></td>" +
+                "<td><button type='button' class='btn btn-danger drop' onclick='drop($(this))'>Hapus</button></td>" +
                 "</tr>");
 
-            $("#count").val(no)
+            $(".rupiahWithSymbol").on("input", function() {
+                $(this).val( formatRupiah( $(this).val(), "Rp. ") );
+            });
+
+            $(".rupiah").on("input", function() {
+                $(this).val( formatRupiah( $(this).val()) );
+            });
 
             // $("#jenis_barang").val("");
             // $("#isi_barang").val("");
@@ -273,13 +306,6 @@
         $("#clock").html(currentTimeString);
         $("#date_wrapper").html(currentDateString);
     }
-
-    // var rupiah = document.getElementById("rupiah");
-    // rupiah.addEventListener("keyup", function(e) {
-    //     // tambahkan 'Rp.' pada saat form di ketik
-    //     // gunakan fungsi formatRupiah() untuk mengubah angka yang di ketik menjadi format angka
-    //     rupiah.value = formatRupiah(this.value, "Rp. ");
-    // });
 
     /* Fungsi formatRupiah */
     function formatRupiah(angka, prefix) {

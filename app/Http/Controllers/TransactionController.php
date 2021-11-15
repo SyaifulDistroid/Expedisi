@@ -111,6 +111,9 @@ class TransactionController extends Controller
         $berat_barang = $request->get('berat_barang');
         $biaya_barang = $request->get('biaya_barang');
 
+        $pattern = "/[^0-9]/";
+        $replacement = "";
+
         $allBarang = array();
 
         $request['cabang'] = $request->user()->cabang;
@@ -139,26 +142,29 @@ class TransactionController extends Controller
                 $barang->id_transaction = $id;
                 $barang->jenis_barang = $jenis_barang[$i];
                 $barang->isi_barang = $isi_barang[$i];
-                $barang->qty = $qty[$i];
-                $barang->berat_barang = $berat_barang[$i];
-                $barang->biaya_barang = $biaya_barang[$i];
+                $barang->qty = preg_replace($pattern, $replacement, $qty[$i]);
+                $barang->berat_barang = preg_replace($pattern, $replacement, $berat_barang[$i]);
+                $barang->biaya_barang = preg_replace($pattern, $replacement, $biaya_barang[$i]);
 
                 $barang->save();
                 array_push($allBarang, $barang);
             }
 
-
-
             DB::commit();
+
+            return redirect()->route('transaction.index')
+                ->with('success','Transaction created successfully.');
+
             // all good
         } catch (\Exception $e) {
-            DB::rollback();
+//            DB::rollback();
             // something went wrong
+            return back()->withError("Gagal insert data, periksa input data.")->withInput();
         }
 
 
         return redirect()->route('transaction.index')
-                        ->with('success','Transaction created successfully.');
+                        ->with('success','Transaction created failed.');
     }
 
     /**
@@ -210,6 +216,12 @@ class TransactionController extends Controller
 
         $request['cabang'] = $request->user()->cabang;
 
+
+        $pattern = "/[^0-9]/";
+        $replacement = "";
+
+//        var_dump(preg_replace($pattern, $replacement, $biaya_barang[0])); exit;
+
         $this->validate($request, [
             'no_resi' => 'required',
             'cabang' => 'required',
@@ -237,9 +249,9 @@ class TransactionController extends Controller
                 $barang->id_transaction = $id;
                 $barang->jenis_barang = $jenis_barang[$i];
                 $barang->isi_barang = $isi_barang[$i];
-                $barang->qty = $qty[$i];
-                $barang->berat_barang = $berat_barang[$i];
-                $barang->biaya_barang = $biaya_barang[$i];
+                $barang->qty = preg_replace($pattern, $replacement, $qty[$i]);
+                $barang->berat_barang = preg_replace($pattern, $replacement, $berat_barang[$i]);
+                $barang->biaya_barang = preg_replace($pattern, $replacement, $biaya_barang[$i]);
 
                 $barang->save();
             }
@@ -249,6 +261,9 @@ class TransactionController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             // something went wrong
+//            $request->session()->get('errors', $e);
+
+            return back()->withError("Gagal update data, periksa input data.")->withInput();
         }
 
         return redirect()->route('transaction.index')

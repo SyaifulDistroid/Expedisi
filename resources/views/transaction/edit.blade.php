@@ -31,6 +31,10 @@
         </div>
     @endif
 
+    @if (session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
+
 
 
     {!! Form::open(array( 'route' => ['transaction.update', $data->id],'method'=>'PUT')) !!}
@@ -88,7 +92,7 @@
         <div class="col-xs-3 col-sm-3 col-md-3">
             <div class="form-group">
                 <strong>No Handphone Pengirim:</strong>
-                {!! Form::text('no_handphone_pengirim', $data->no_handphone_pengirim, array('placeholder' => 'No Handphone Pengirim','class' => 'form-control')) !!}
+                {!! Form::number('no_handphone_pengirim', $data->no_handphone_pengirim, array('placeholder' => 'No Handphone Pengirim','class' => 'form-control', 'type' => 'number')) !!}
             </div>
         </div>
 
@@ -116,7 +120,7 @@
         <div class="col-xs-3 col-sm-3 col-md-3">
             <div class="form-group">
                 <strong>No Handphone Penerima:</strong>
-                {!! Form::text('no_handphone_penerima', $data->no_handphone_penerima, array('placeholder' => 'No Handphone Penerima','class' => 'form-control')) !!}
+                {!! Form::number('no_handphone_penerima', $data->no_handphone_penerima, array('placeholder' => 'No Handphone Penerima','class' => 'form-control', 'type' => 'number')) !!}
             </div>
         </div>
 
@@ -155,13 +159,14 @@
             </tr>
 
             @php($idtransaction = $data->id)
-            @foreach($detail as $data)
+            @foreach($detail as $no => $data)
                 <tr>
                     <td>{!! Form::text('jenis_barang[]', $data->jenis_barang, array('placeholder' => 'jenis_barang','class' => 'form-control')) !!}</td>
                     <td>{!! Form::text('isi_barang[]', $data->isi_barang, array('placeholder' => 'isi_barang','class' => 'form-control')) !!}</td>
-                    <td>{!! Form::text('qty[]', $data->qty, array('placeholder' => 'qty','class' => 'form-control')) !!}</td>
-                    <td>{!! Form::text('berat_barang[]', $data->berat_barang, array('placeholder' => 'berat_barang','class' => 'form-control')) !!}</td>
-                    <td>{!! Form::text('biaya_barang[]', $data->biaya_barang, array('placeholder' => 'biaya_barang','class' => 'form-control')) !!}</td>
+{{--                    <td><input type="text" name="qty[]" class="form-control rupiah" value="formatRupiah(<?=$data->qty?>)"></td>--}}
+                    <td>{!! Form::text('qty[]', $data->qty, array('placeholder' => 'qty','class' => 'form-control rupiah', 'id' => 'qty'.$no)) !!}</td>
+                    <td>{!! Form::text('berat_barang[]', $data->berat_barang, array('placeholder' => 'berat_barang','class' => 'form-control rupiah', 'id' => 'berat_barang'.$no)) !!}</td>
+                    <td>{!! Form::text('biaya_barang[]', $data->biaya_barang, array('placeholder' => 'biaya_barang','class' => 'form-control rupiahWithSymbol', 'id' => 'biaya_barang'.$no)) !!}</td>
                 </tr>
             @endforeach
 
@@ -180,6 +185,43 @@
 
         // A $( document ).ready() block.
         $( document ).ready(function() {
+
+            var noRow = 0;
+            $('#dataTable tr').each(function() {
+                var self = $(this);
+
+                if ($("#qty"+noRow).val() != undefined){
+                    // console.log(noRow);
+                    // console.log($("#qty"+noRow).val());
+
+
+                    $("#qty"+noRow).val( formatRupiah( $("#qty"+noRow).val()) );
+                    $("#berat_barang"+noRow).val( formatRupiah( $("#berat_barang"+noRow).val()) );
+                    $("#biaya_barang"+noRow).val( formatRupiah( $("#biaya_barang"+noRow).val(), "Rp. ") );
+                }
+
+                noRow++;
+
+
+                $(".rupiahWithSymbol").on("input", function() {
+                    $(this).val( formatRupiah( $(this).val(), "Rp. ") );
+                });
+
+                $(".rupiah").on("input", function() {
+                    $(this).val( formatRupiah( $(this).val()) );
+                });
+
+            });
+            //
+            // $(".rupiahWithSymbol").on("input", function() {
+            //     $(this).val( formatRupiah( $(this).val(), "Rp. ") );
+            // });
+            //
+            // $(".rupiah").on("input", function() {
+            //     $(this).val( formatRupiah( $(this).val()) );
+            // });
+
+
             console.log( "ready!" );
 
             $("#btnAddData").bind("click",function(){
@@ -205,7 +247,67 @@
                 $(this).parent("tr:first").remove()
             });
 
+            setInterval(function() {
+                updateClock();
+            }, 1000)
+
         });
+
+        /* Fungsi formatRupiah */
+        function formatRupiah(angka, prefix) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            // tambahkan titik jika yang di input sudah menjadi angka ribuan
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
+        }
+
+        function updateClock (){
+            var currentTime = new Date ( );
+            var currentHours = currentTime.getHours ( );
+            var currentMinutes = currentTime.getMinutes ( );
+            var currentSeconds = currentTime.getSeconds ( );
+
+            var day = currentTime.getDay();
+            var dayarr =["Minggu","Senin","Selasa","Rabu","Kamis","Jum'at","Sabtu"]; day = dayarr[day];
+
+            var year = currentTime.getFullYear();
+            var month = currentTime.getMonth();
+            var tgl = currentTime.getDate();
+
+            var montharr = ["Desember", "Januari", "Febuari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November" ];
+            month = montharr[month];
+
+            // Pad the minutes and seconds with leading zeros, if required
+            currentHours = ( currentHours < 10 ? "0" : "" ) + currentHours;
+            currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
+            currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
+
+            // Choose either "AM" or "PM" as appropriate
+            var timeOfDay = ""; // ( currentHours < 12 ) ? "AM" : "PM";
+
+            // Convert the hours component to 12-hour format if needed
+            // currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
+
+            // Convert an hours component of "0" to "12"
+            // currentHours = ( currentHours == 0 ) ? 12 : currentHours;
+
+            // Compose the string for display
+            var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
+            var currentDateString = day+", "+ tgl+" "+month+" "+year;
+
+            $("#clock").html(currentTimeString);
+            $("#date_wrapper").html(currentDateString);
+        }
 
         function drop(row)
         {

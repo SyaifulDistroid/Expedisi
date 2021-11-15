@@ -121,18 +121,62 @@
                 <th>Biaya Barang</th>
             </tr>
 
-                @php($no = 0)
-                @foreach($detail as $data)
+                @foreach($detail as $no => $data)
                     <tr>
-                        <td>{{ $data->jenis_barang }}</td>
-                        <td>{{ $data->isi_barang }}</td>
-                        <td>{{ $data->qty }}</td>
-                        <td>{{ $data->berat_barang }}</td>
-                        <td>{{ $data->biaya_barang }}</td>
+                        <td id="jenis_barang{{$no}}">{{ $data->jenis_barang }}</td>
+                        <td id="isi_barang{{$no}}">{{ $data->isi_barang }}</td>
+                        <td id="qty{{$no}}">{{ $data->qty }}</td>
+                        <td id="berat_barang{{$no}}">{{ $data->berat_barang }}</td>
+                        <td id="biaya_barang{{$no}}">{{ $data->biaya_barang }}</td>
                     </tr>
                 @endforeach
 
         </table>
 
     </div>
+
+    <script>
+        var noRow = 0;
+        $('#dataTable tr').each(function() {
+            var self = $(this);
+
+            if ($("#qty"+noRow).val() != undefined){
+                // console.log(noRow);
+                // console.log($("#qty"+noRow).val());
+
+
+                $("#qty"+noRow).text( formatRupiah( $("#qty"+noRow).text()) );
+                $("#berat_barang"+noRow).text( formatRupiah( $("#berat_barang"+noRow).text()) );
+                $("#biaya_barang"+noRow).text( formatRupiah( $("#biaya_barang"+noRow).text(), "Rp. ") );
+            }
+
+            $(".rupiahWithSymbol").on("input", function() {
+                $(this).val( formatRupiah( $(this).val(), "Rp. ") );
+            });
+
+            $(".rupiah").on("input", function() {
+                $(this).val( formatRupiah( $(this).val()) );
+            });
+
+            noRow++;
+        });
+
+        /* Fungsi formatRupiah */
+        function formatRupiah(angka, prefix) {
+            var number_string = angka.replace(/[^,\d]/g, "").toString(),
+                split = number_string.split(","),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            // tambahkan titik jika yang di input sudah menjadi angka ribuan
+            if (ribuan) {
+                separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+            return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
+        }
+    </script>
 @endsection
