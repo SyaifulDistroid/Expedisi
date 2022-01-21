@@ -31,7 +31,10 @@ class PermissionTableSeeder extends Seeder
             'transaction-edit',
             'transaction-delete',
             'transaction-list',
-//           'transaction-databarang-delete',
+            'print-create',
+            'print-edit',
+            'print-delete',
+            'print-list',
         ];
 
         foreach ($permissions as $permission) {

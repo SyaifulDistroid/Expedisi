@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DataBarangTemp;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\PrintTemp;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use DB;
@@ -99,6 +100,28 @@ class TransactionController extends Controller
         DataBarangTemp::create($request->all());
         return redirect()->route('transaction.create')
         ->with('success','Data berhasil disimpan.');
+    }
+
+    public function storePrint(Request $request)
+    {
+        // $this->validate($request, [
+        //     'id_transaction' => 'required',
+        // ]);
+
+        $user = $request->user();
+
+        $id_transaction = $request->get('id_transaction');
+
+        for ($i = 0; $i < count($id_transaction); $i++){
+            $print = new PrintTemp();
+            $print->id_transaction = $id_transaction[$i];
+            $print->id_user = $user->id;
+
+            $print->save();
+        }
+
+        return redirect()->route('transaction.index')
+                ->with('success','Print Add successfully.');
     }
 
 

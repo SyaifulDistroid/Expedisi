@@ -88,22 +88,6 @@
 
 {!! Form::close() !!}
 
-{!! Form::open(array('route' => 'transaction.storeprint','method'=>'POST')) !!}
-<div class="row" id="formPrint">
-    <div class="col-xs-2 col-sm-2 col-md-2">
-        <div class="form-group">
-            <button type="button" class="btn btn-success form-control" style="margin-top: 23px">Print</button>
-        </div>
-    </div>
-
-    <div class="col-xs-2 col-sm-2 col-md-2">
-        <div class="form-group">
-            <button type="submit" class="btn btn-success form-control" style="margin-top: 23px">Add to Print</button>
-        </div>
-    </div>
-</div>
-{!! Form::close() !!}
-
 <table class="table table-bordered">
  <tr>
     <th>No.</th>
@@ -117,7 +101,6 @@
     <th>No Handphone Penerima</th>
     <th>Cara Pembayaran</th>
      <th>Dibuat Tgl</th>
-     <th>Print</th>
      <th></th>
  </tr>
  @forelse ($datas as $data)
@@ -133,7 +116,6 @@
     <td>{{ $data->no_handphone_penerima }}</td>
     <td>{{ $data->cara_pembayaran }}</td>
     <td>{{ $data->created_at }}</td>
-    <td><input type="checkbox" onclick="OnClickCheckbox('{{ $data->id }}', this)" /></td>
     <td>
        <a class="btn btn-info" href="{{ route('transaction.show',$data->id) }}">Show</a>
 
@@ -173,23 +155,6 @@
         // });
 
     });
-
-    function OnClickCheckbox(id, checkbox) {
-
-        console.log("clicked "+id);
-
-        if ($(checkbox).is(":checked"))
-        {
-            console.log("checked");
-
-            var t = $("<input id='print_"+id+"' type='text' name='id_transaction[]' value='"+id+"'>");
-            $("#formPrint").append(t);
-        } else {
-            $("#print_"+id).remove();
-        }
-
-    } 
-
 </script>
 
 @endsection

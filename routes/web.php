@@ -7,6 +7,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\PrintController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('users', UserController::class);
     Route::resource('products', ProductController::class);
     Route::resource('transaction', TransactionController::class);
+    Route::resource('print', PrintController::class);
     Route::post('transaction.databarang', [TransactionController::class, 'databarang'])->name('transaction.databarang');
+    Route::post('transaction.storeprint', [TransactionController::class, 'storePrint'])->name('transaction.storeprint');
     Route::delete('transaction.databarang/{id}/{idtransaction}', [TransactionController::class, 'destroydatabarang'])->name('transaction.databarang');
 });
