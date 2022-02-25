@@ -88,21 +88,30 @@
 
 {!! Form::close() !!}
 
-{!! Form::open(array('route' => 'transaction.storeprint','method'=>'POST')) !!}
-<div class="row" id="formPrint">
-    <div class="col-xs-2 col-sm-2 col-md-2">
-        <div class="form-group">
-            <button type="button" class="btn btn-success form-control" style="margin-top: 23px">Print</button>
-        </div>
-    </div>
 
+<div class="row">
     <div class="col-xs-2 col-sm-2 col-md-2">
         <div class="form-group">
-            <button type="submit" class="btn btn-success form-control" style="margin-top: 23px">Add to Print</button>
+            <a href="{{ route('print.index') }}" class="btn btn-success form-control">Print</a>
         </div>
     </div>
+    {!! Form::open(array('route' => 'transaction.storeprint','method'=>'POST')) !!}
+    <div class="col-md-12" id="formPrint">
+        <div class="form-group">
+            <button type="submit" class="btn btn-success form-control">Add to Print</button>
+        </div>
+    </div>
+    {!! Form::close() !!}
+
+    {!! Form::open(array('route' => 'transaction.clearprint','method'=>'POST')) !!}
+    <div class="col-md-12">
+        <div class="form-group">
+            <button type="submit" class="btn btn-danger form-control">Clear All Print</button>
+        </div>
+    </div>
+    {!! Form::close() !!}
 </div>
-{!! Form::close() !!}
+
 
 <table class="table table-bordered">
  <tr>
@@ -182,7 +191,7 @@
         {
             console.log("checked");
 
-            var t = $("<input id='print_"+id+"' type='text' name='id_transaction[]' value='"+id+"'>");
+            var t = $("<input style='display:none' id='print_"+id+"' type='text' name='id_transaction[]' value='"+id+"'>");
             $("#formPrint").append(t);
         } else {
             $("#print_"+id).remove();

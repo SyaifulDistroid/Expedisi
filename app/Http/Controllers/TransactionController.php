@@ -102,6 +102,15 @@ class TransactionController extends Controller
         ->with('success','Data berhasil disimpan.');
     }
 
+    public function clearPrint(Request $request)
+    {
+        $user = $request->user();
+        PrintTemp::where("id_user", $user->id)->delete();
+
+        return redirect()->route('transaction.index')
+                ->with('success','Clear ALl Print successfully.');
+    }
+
     public function storePrint(Request $request)
     {
         // $this->validate($request, [

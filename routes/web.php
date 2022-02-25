@@ -38,8 +38,12 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('users', UserController::class);
     Route::resource('products', ProductController::class);
     Route::resource('transaction', TransactionController::class);
-    Route::resource('print', PrintController::class);
     Route::post('transaction.databarang', [TransactionController::class, 'databarang'])->name('transaction.databarang');
     Route::post('transaction.storeprint', [TransactionController::class, 'storePrint'])->name('transaction.storeprint');
+    Route::post('transaction.clearprint', [TransactionController::class, 'clearprint'])->name('transaction.clearprint');
+
+    Route::resource('print', PrintController::class);
+    Route::get('print.print', [PrintController::class, 'print'])->name('print.print');
+
     Route::delete('transaction.databarang/{id}/{idtransaction}', [TransactionController::class, 'destroydatabarang'])->name('transaction.databarang');
 });
