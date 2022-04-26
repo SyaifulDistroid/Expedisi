@@ -134,6 +134,13 @@
         </div>
     </div>
 
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <div class="form-group">
+            <strong>Nama Pengambil Barang:</strong>
+            {!! Form::text('nama_pengambil_barang', null, array('placeholder' => 'Nama Pengambil Barang','class' => 'form-control', 'type' => 'text')) !!}
+        </div>
+    </div>
+
     <input type="hidden" id="count" name="count">
 
     <div class="col-lg-12 margin-tb"><p></p></div>

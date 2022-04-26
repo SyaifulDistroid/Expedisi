@@ -57,8 +57,38 @@ class TransactionController extends Controller
             $q_cabang = " AND cabang = '".$request->user()->cabang."' ";
         }
 
-        $datas = Transaction::orderBy('id','DESC')
+        $datas = DB::table('transactions') //Transaction::orderBy('id','DESC')
+        ->select(
+            'transactions.id', 
+            'transactions.no_resi', 
+            'transactions.cabang', 
+            'transactions.nama_pengirim', 
+            'transactions.alamat_pengirim',
+            'transactions.no_handphone_pengirim',
+            'transactions.nama_penerima',
+            'transactions.alamat_penerima',
+            'transactions.no_handphone_penerima', 
+            'transactions.cara_pembayaran',
+            'transactions.created_at',
+            'transactions.updated_at',
+            DB::raw('SUM(data_barang_temps.qty) as total_qty'),
+            DB::raw('SUM(data_barang_temps.biaya_barang) as total_biaya') )
+        ->join('data_barang_temps', 'data_barang_temps.id_transaction', '=', 'transactions.id')
+        ->groupBy(
+            'id',
+            'no_resi',
+            'cabang',
+            'nama_pengirim',
+            'alamat_pengirim',
+            'no_handphone_pengirim',
+            'nama_penerima',
+            'alamat_penerima',
+            'no_handphone_penerima',
+            'cara_pembayaran',
+            'created_at',
+            'updated_at')
             ->whereRaw(' (nama_pengirim like "%'.$cari.'%" or
+                no_resi like "%'.$cari.'%" or
                 alamat_pengirim like "%'.$cari.'%" or
                 no_handphone_pengirim like "%'.$cari.'%" or
                 nama_penerima like "%'.$cari.'%" or alamat_penerima like "%'.$cari.'%" or no_handphone_penerima like "%'.$cari.'%" or cabang like "%'.$cari.'%"  )
@@ -159,12 +189,15 @@ class TransactionController extends Controller
             'no_handphone_pengirim'=> 'required',
             'nama_penerima'=> 'required',
             'alamat_penerima'=> 'required',
-            'no_handphone_penerima' => 'required'
+            'no_handphone_penerima' => 'required',
+            'nama_pengambil_barang' => 'required'
         ]);
 
         DB::beginTransaction();
 
         try {
+
+            \Log::info('This is some useful information.');
 
             $id = Transaction::create($request->all())->id;
 
@@ -177,6 +210,15 @@ class TransactionController extends Controller
                 $barang->qty = preg_replace($pattern, $replacement, $qty[$i]);
                 $barang->berat_barang = preg_replace($pattern, $replacement, $berat_barang[$i]);
                 $barang->biaya_barang = preg_replace($pattern, $replacement, $biaya_barang[$i]);
+
+                \Log::info('$barang->id_transaction : '.$barang->id_transaction);
+                \Log::info('$barang->jenis_barang : '.$barang->jenis_barang);
+                \Log::info('$barang->isi_barang : '.$barang->isi_barang);
+                \Log::info('$barang->qty : '.$barang->qty);
+                \Log::info('$barang->berat_barang : '.$barang->berat_barang);
+                \Log::info('$barang->biaya_barang : '.$barang->biaya_barang);
+
+                \Log::info('===============================');
 
                 $barang->save();
                 array_push($allBarang, $barang);
@@ -191,6 +233,9 @@ class TransactionController extends Controller
         } catch (\Exception $e) {
 //            DB::rollback();
             // something went wrong
+
+            \Log::info($e->getMessage());
+
             return back()->withError("Gagal insert data, periksa input data.")->withInput();
         }
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PrintController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,8 +43,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('transaction.storeprint', [TransactionController::class, 'storePrint'])->name('transaction.storeprint');
     Route::post('transaction.clearprint', [TransactionController::class, 'clearprint'])->name('transaction.clearprint');
 
+    Route::resource('report', ReportController::class);
     Route::resource('print', PrintController::class);
     Route::get('print.print', [PrintController::class, 'print'])->name('print.print');
+    Route::post('print.addDataPrint', [PrintController::class, 'addDataPrint'])->name('print.addDataPrint');
 
     Route::delete('transaction.databarang/{id}/{idtransaction}', [TransactionController::class, 'destroydatabarang'])->name('transaction.databarang');
 });

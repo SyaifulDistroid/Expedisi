@@ -8,7 +8,7 @@
                 <h2>Buat Transaksi</h2>
             </div>
             <div class="pull-right">
-                <a class="btn btn-primary" href="{{ route('transaction.index') }}"> Back</a>
+                <a class="btn btn-primary" href="{{ route('transaction.index') }}"> Kembali</a>
             </div>
         </div>
     </div>
@@ -101,6 +101,13 @@
             <div class="form-group">
                 <strong>Pembayaran dengan:</strong>
                 {!! Form::select('cara_pembayaran', array('' => 'Pilih cara pembayaran', 'LUNAS' => 'LUNAS', 'TAGIH' => 'TAGIH', 'FRANCO' => 'FRANCO'), $data->cara_pembayaran, array('class' => 'form-control', 'disabled' => 'disabled' )) !!}
+            </div>
+        </div>
+
+        <div class="col-xs-3 col-sm-3 col-md-3">
+            <div class="form-group">
+                <strong>Nama Pengambil Barang:</strong>
+                {!! Form::text('nama_pengambil_barang', $data->nama_pengambil_barang, array('placeholder' => 'Nama Pengambil Barang','class' => 'form-control', 'type' => 'text', 'disabled' => 'disabled')) !!}
             </div>
         </div>
 

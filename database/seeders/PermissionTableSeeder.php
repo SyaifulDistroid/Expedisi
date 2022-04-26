@@ -35,6 +35,10 @@ class PermissionTableSeeder extends Seeder
             'print-edit',
             'print-delete',
             'print-list',
+            'report-create',
+            'report-edit',
+            'report-delete',
+            'report-list',
         ];
 
         foreach ($permissions as $permission) {

@@ -52,11 +52,14 @@
                             <li><a class="nav-link" href="{{ route('roles.index') }}">Manage Role</a></li>
                         @endcan
 {{--                        <li><a class="nav-link" href="{{ route('products.index') }}">Manage Product</a></li>--}}
+                        @can('transaction-list')
+                            <li><a class="nav-link" href="{{ route('transaction.index') }}">Manage Transaction</a></li>
+                        @endcan
                         @can('print-list')
                             <li><a class="nav-link" href="{{ route('print.index') }}">Print</a></li>
                         @endcan
-                        @can('transaction-list')
-                            <li><a class="nav-link" href="{{ route('transaction.index') }}">Manage Transaction</a></li>
+                        @can('report-list')
+                            <li><a class="nav-link" href="{{ route('report.index') }}">Report</a></li>
                         @endcan
 
                         <li class="nav-item dropdown">

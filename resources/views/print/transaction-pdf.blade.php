@@ -21,7 +21,7 @@
 
 	<table>
 		<tr>
-			<td>Jurusan: Jakarta</td>
+			<td>Jurusan: {{ $jurusan }}</td>
 			<td>&nbsp;&nbsp;&nbsp;</td>
 			<td>Tanggal: {{ $now }}</td>
 		</tr>
@@ -42,8 +42,8 @@
 				<th>Kota</th>
 				<th>Penerima</th>
 				<th>Alamat Penerima</th>
-				<th>Jumlah</th>
 				<th>Jenis Barang</th>
+				<th>Jumlah</th>
 				<th>Berat</th>
 				<th>Ongkos</th>
 			</tr>
@@ -52,6 +52,7 @@
 			@php 
 			
 				$i=1;
+				$tot_jumlah = 0;
 				$tot_berat = 0;
 				$tot_biaya = 0;
 			
@@ -60,6 +61,7 @@
 			@foreach($print as $p)
 
 			@php
+				$tot_jumlah += $p->qty;
 				$tot_berat += $p->berat_barang;
 				$tot_biaya += $p->biaya_barang;
 			@endphp
@@ -72,14 +74,15 @@
 				<td>{{$p->alamat_pengirim}}</td>
 				<td>{{$p->nama_penerima}}</td>
 				<td>{{$p->alamat_penerima}}</td>
-				<td>{{$p->qty}}</td>
 				<td>{{$p->jenis_barang}}</td>
+				<td>{{$p->qty}}</td>
 				<td>{{ number_format( $p->berat_barang )}}</td>
 				<td>Rp {{ number_format( $p->biaya_barang)}}</td>
 			</tr>
 			@endforeach
 			<tr>
-				<td colspan="9">Total</td>
+				<td colspan="8">Total</td>
+				<td>{{ number_format( $tot_jumlah )}}</td>
 				<td>{{ number_format( $tot_berat )}}</td>
 				<td>Rp {{ number_format( $tot_biaya )}}</td>
 			</tr>

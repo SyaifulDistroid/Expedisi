@@ -23,6 +23,7 @@ class Transaction extends Model
         'nama_penerima',
         'alamat_penerima',
         'no_handphone_penerima',
-        'cara_pembayaran'
+        'cara_pembayaran',
+        'nama_pengambil_barang'
     ];
 }

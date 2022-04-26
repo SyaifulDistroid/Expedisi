@@ -15,15 +15,10 @@ use Hash;
 use PDF;
 use Illuminate\Support\Arr;
 
-class PrintController extends Controller
+class ReportController extends Controller
 {
-    //
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
+
+    public function index2(Request $request)
     {
 
         $user = $request->user();
@@ -69,65 +64,24 @@ class PrintController extends Controller
             ->with('i', ($request->input('page', 1) - 1) * 10);
     }
 
-    public function print(Request $request){
-
-        $now = date('d-m-Y H:i:s');
-        $no_polisi = $request->no_polisi;
-        $supir = $request->supir;
-        $jurusan = $request->jurusan;
+    public function index(Request $request)
+    {
 
         $user = $request->user();
 
-        $print = DB::table('print_temps')
-        ->join('transactions', 'print_temps.id_transaction', '=', 'transactions.id')
-        ->join('data_barang_temps', 'transactions.id', '=', 'data_barang_temps.id_transaction')
-        ->where('print_temps.id_user', $user->id)
-        ->get();
+        $cari = $request->search;
 
-        // return view('print/transaction-pdf', compact('print', 'now', 'no_polisi', 'supir', 'jurusan'));
+        $datas = DB::table('transactions')
+            ->select( 'transactions.no_resi', 'transactions.cabang', 'transactions.created_at',  DB::raw('SUM(data_barang_temps.qty) as total_qty'), DB::raw('SUM(data_barang_temps.berat_barang) as total_berat'), DB::raw('SUM(data_barang_temps.biaya_barang) as total_biaya') )
+            ->join('data_barang_temps', 'transactions.id', '=', 'data_barang_temps.id_transaction' )
+            ->groupBy('no_resi', 'cabang', 'created_at')
+            ->paginate(10);
 
-        $customPaper = array(0, 0, 595.276, 419.5276); //20 x 10 cm, cm to point
- 
-    	$pdf = PDF::loadview('print/transaction-pdf',['print'=>$print, 
-        'now'=>$now, 
-        'no_polisi'=>$no_polisi, 
-        'supir'=>$supir, 
-        'jurusan'=>$jurusan])->setPaper('a3', 'landscape');;//->setPaper($customPaper);
+        // dd($datas);
 
-    	return $pdf->download('transaction-pdf.pdf');
-    }
-
-    public function addDataPrint(Request $request){
-
-        $user = $request->user();
-        $no_resi = $request->no_resi;
-
-
-        /**
-         * CEK
-         */
-        $data = DB::table('print_temps')
-            ->join('transactions', 'print_temps.id_transaction', '=', 'transactions.id')
-            ->where('transactions.no_resi', $no_resi)
-            ->first();
-
-        
-        if ($data != null){
-            return redirect()->route('print.index')
-                ->with('warning','Data already exist.');
-        }
-
-        $trans = DB::table('transactions')->where('no_resi', $no_resi)->first();
-
-        $print = new PrintTemp();
-        $print->id_transaction = $trans->id;
-        $print->id_user = $user->id;
-
-        $print->save();
-
-        return redirect()->route('print.index')
-                ->with('success','Add data successfully.');
+        return view('report.index',compact('datas'))
+            ->with('i', ($request->input('page', 1) - 1) * 10);
 
     }
-    
+
 }

@@ -5,11 +5,11 @@
 <div class="row">
     <div class="col-lg-12 margin-tb">
         <div class="pull-left">
-            <h2>Transaction</h2>
+            <h2>Transaksi</h2>
         </div>
         <div class="pull-right">
             @can('transaction-create')
-                <a class="btn btn-success" href="{{ route('transaction.create') }}"> Create New Transaction</a>
+                <a class="btn btn-success" href="{{ route('transaction.create') }}"> Buat Transaksi Baru</a>
             @endcan
         </div>
     </div>
@@ -92,13 +92,13 @@
 <div class="row">
     <div class="col-xs-2 col-sm-2 col-md-2">
         <div class="form-group">
-            <a href="{{ route('print.index') }}" class="btn btn-success form-control">Print</a>
+            <a href="{{ route('print.index') }}" class="btn btn-success form-control">Cetak</a>
         </div>
     </div>
     {!! Form::open(array('route' => 'transaction.storeprint','method'=>'POST')) !!}
     <div class="col-md-12" id="formPrint">
         <div class="form-group">
-            <button type="submit" class="btn btn-success form-control">Add to Print</button>
+            <button type="submit" class="btn btn-success form-control">Tambah ke Cetak</button>
         </div>
     </div>
     {!! Form::close() !!}
@@ -106,7 +106,7 @@
     {!! Form::open(array('route' => 'transaction.clearprint','method'=>'POST')) !!}
     <div class="col-md-12">
         <div class="form-group">
-            <button type="submit" class="btn btn-danger form-control">Clear All Print</button>
+            <button type="submit" class="btn btn-danger form-control">Bersihkan semua Cetak</button>
         </div>
     </div>
     {!! Form::close() !!}
@@ -114,49 +114,58 @@
 
 
 <table class="table table-bordered">
- <tr>
-    <th>No.</th>
-    <th>Cabang</th>
-    <th>No. Resi</th>
-    <th>Nama Pengirim</th>
-    <th>Alamat Pengirim</th>
-    <th>No Handphone Pengirim</th>
-    <th>Nama Penerima</th>
-    <th>Alamat Penerima</th>
-    <th>No Handphone Penerima</th>
-    <th>Cara Pembayaran</th>
-     <th>Dibuat Tgl</th>
-     <th>Print</th>
-     <th></th>
- </tr>
- @forelse ($datas as $data)
-  <tr>
-    <td>{{ ++$i }}.</td>
-    <td>{{ $data->cabang }}</td>
-    <td>{{ $data->no_resi }}</td>
-    <td>{{ $data->nama_pengirim }}</td>
-    <td>{{ $data->alamat_pengirim }}</td>
-    <td>{{ $data->no_handphone_pengirim }}</td>
-    <td>{{ $data->nama_penerima }}</td>
-    <td>{{ $data->alamat_penerima }}</td>
-    <td>{{ $data->no_handphone_penerima }}</td>
-    <td>{{ $data->cara_pembayaran }}</td>
-    <td>{{ $data->created_at }}</td>
-    <td><input type="checkbox" onclick="OnClickCheckbox('{{ $data->id }}', this)" /></td>
-    <td>
-       <a class="btn btn-info" href="{{ route('transaction.show',$data->id) }}">Show</a>
-
-        @can('transaction-edit')
-       <a class="btn btn-primary" href="{{ route('transaction.edit',$data->id) }}">Edit</a>
-        @endcan
-
-        @can('transaction-delete')
-        {!! Form::open(['method' => 'DELETE','route' => ['transaction.destroy', $data->id],'style'=>'display:inline']) !!}
-            {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
-        {!! Form::close() !!}
-        @endcan
-    </td>
-  </tr>
+ <tbody>
+    <tr>
+        <th>No.</th>
+        <th>Cabang</th>
+        <th>No. Resi</th>
+        <th>Nama Pengirim</th>
+        {{-- <th>Alamat Pengirim</th>
+        <th>No Handphone Pengirim</th> --}}
+        <th>Total Qty</th>
+        <th>Total Biaya</th>
+        <th>Nama Penerima</th>
+        <th>Alamat Penerima</th>
+        <th>No Handphone Penerima</th>
+        <th>Cara Pembayaran</th>
+        <th>Dibuat Tgl</th>
+        <th>Cetak <input type="checkbox" onclick="OnClickCheckboxAll(this)"> </th>
+        <th></th>
+     </tr>
+     @php $index = 0; @endphp
+     @forelse ($datas as $data)
+      <tr class="data_table">
+        <td>{{ ++$i }}.</td>
+        <td style="display: none" id="id_{{ $index }}">{{ $data->id }}</td>
+        <td>{{ $data->cabang }}</td>
+        <td>{{ $data->no_resi }}</td>
+        <td>{{ $data->nama_pengirim }}</td>
+        {{-- <td>{{ $data->alamat_pengirim }}</td>
+        <td>{{ $data->no_handphone_pengirim }}</td> --}}
+        <td>{{ $data->total_qty }}</td>
+        <td class="rupiahWithSymbol" >Rp {{ number_format( $data->total_biaya ) }}</td>
+        <td>{{ $data->nama_penerima }}</td>
+        <td>{{ $data->alamat_penerima }}</td>
+        <td>{{ $data->no_handphone_penerima }}</td>
+        <td>{{ $data->cara_pembayaran }}</td>
+        <td>{{ $data->created_at }}</td>
+        <td><input id="checkbox_{{ $index }}" type="checkbox" onclick="OnClickCheckbox('{{ $data->id }}', this)" /></td>
+        <td>
+           <a class="btn btn-info" href="{{ route('transaction.show',$data->id) }}">Lihat</a>
+    
+            @can('transaction-edit')
+           <a class="btn btn-primary" href="{{ route('transaction.edit',$data->id) }}">Ubah</a>
+            @endcan
+    
+            @can('transaction-delete')
+            {!! Form::open(['method' => 'DELETE','route' => ['transaction.destroy', $data->id],'style'=>'display:inline']) !!}
+                {!! Form::submit('Hapus', ['class' => 'btn btn-danger']) !!}
+            {!! Form::close() !!}
+            @endcan
+        </td>
+      </tr>
+ </tbody>
+ @php $index++; @endphp
 @empty
      <tr>
          <td colspan="12">
@@ -172,6 +181,24 @@
 {{--{{ $datas->links() }}--}}
 
 <script>
+
+    function formatRupiah(angka, prefix) {
+        var number_string = angka.replace(/[^,\d]/g, "").toString(),
+            split = number_string.split(","),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        // tambahkan titik jika yang di input sudah menjadi angka ribuan
+        if (ribuan) {
+            separator = sisa ? "." : "";
+            rupiah += separator + ribuan.join(".");
+        }
+
+        rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+        return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
+    }
+
     $(document).ready(function() {
 
         // console.log($(".datepicker").val());
@@ -180,6 +207,8 @@
         //     autoclose: true,
         //     todayHighlight: true,
         // });
+
+        // $(".rupiahWithSymbol").text( formatRupiah( $(this).text(), "Rp. ") );
 
     });
 
@@ -197,7 +226,32 @@
             $("#print_"+id).remove();
         }
 
-    } 
+    }
+
+    function OnClickCheckboxAll(checkbox){
+        $('.data_table').each(function(index, tr) {
+
+                console.log(index);
+                // console.log(tr);
+                var id = $("#id_"+index).text();
+
+                console.log("id-> "+id);
+
+            if ($(checkbox).is(":checked")){
+
+                $("#checkbox_"+index).prop('checked', true);
+
+                var t = $("<input style='display:none' id='print_"+id+"' type='text' name='id_transaction[]' value='"+id+"'>");
+                $("#formPrint").append(t);
+            } else {
+
+                $("#checkbox_"+index).prop('checked', false);
+
+                $("#print_"+id).remove();
+            }
+
+        });
+    }
 
 </script>
 
